@@ -1,6 +1,10 @@
 package configs
 
-import "flag"
+import (
+	"flag"
+	"github.com/caarlos0/env/v6"
+	"log"
+)
 
 type Config struct {
 	Server Server
@@ -8,11 +12,11 @@ type Config struct {
 }
 
 type Server struct {
-	Address string
+	Address string `env:"SERVER_ADDRESS"`
 }
 
 type Result struct {
-	BaseAddress string
+	BaseAddress string `env:"BASE_URL"`
 }
 
 var (
@@ -27,12 +31,21 @@ func init() {
 
 func New() *Config {
 	flag.Parse()
-	return &Config{
-		Server: Server{
-			Address: *address,
-		},
-		Result: Result{
-			BaseAddress: *baseAddress,
-		},
+	cfg := &Config{
+		Server: Server{},
+		Result: Result{},
 	}
+	err := env.Parse(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	flag.Parse()
+	if cfg.Server.Address == "" {
+		cfg.Server.Address = *address
+	}
+	if cfg.Result.BaseAddress == "" {
+		cfg.Result.BaseAddress = *baseAddress
+	}
+	log.Println(cfg)
+	return cfg
 }

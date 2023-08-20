@@ -3,6 +3,7 @@ module github.com/Aerok925/shortrurl
 go 1.20
 
 require (
+	github.com/caarlos0/env/v6 v6.10.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
