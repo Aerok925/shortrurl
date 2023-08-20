@@ -22,8 +22,8 @@ func TestHandlerURL(t *testing.T) {
 	}
 	cache := inmemory.New()
 	r := reducing.New()
-	service := app.New(cache, r, logger, "localhost:8080")
-	a := New(service, "localhost", ":8080")
+	service := app.New(cache, r, logger, "http://localhost:8080")
+	a := New(service, "localhost:8080", logger)
 	a.Rout()
 
 	serverAddres := "http://localhost:8080"

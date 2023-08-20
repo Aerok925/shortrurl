@@ -10,7 +10,7 @@ import (
 
 func Test(t *testing.T) {
 	// setup all struct
-	hostName := "localhost:8080"
+	hostName := "http://localhost:8080"
 	wantHostName := "http://localhost:8080/"
 	cache := inmemory.New()
 	r := reducing2.New()

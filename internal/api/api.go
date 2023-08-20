@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -16,17 +16,17 @@ type API struct {
 	s        service
 	r        *mux.Router
 	hostname string
-	port     string
+	logger   *zap.Logger
 }
 
-func New(s service, hostname, port string) *API {
+func New(s service, hostname string, logger *zap.Logger) *API {
 	r := mux.NewRouter()
 
 	return &API{
 		s:        s,
 		r:        r,
 		hostname: hostname,
-		port:     port,
+		logger:   logger,
 	}
 }
 
@@ -43,7 +43,8 @@ func (a *API) Rout() {
 }
 
 func (a *API) Start() error {
-	return http.ListenAndServe(a.hostname+a.port, a.r)
+	a.logger.Info("Server start in " + a.hostname)
+	return http.ListenAndServe(a.hostname, a.r)
 }
 
 func (a *API) handlerGetURL(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +66,6 @@ func (a *API) handlerGetURL(w http.ResponseWriter, r *http.Request) {
 func (a *API) handlerCreateURL(w http.ResponseWriter, r *http.Request) {
 	bodyData, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

@@ -39,7 +39,7 @@ func (s *Service) GetURL(id string) (string, error) {
 }
 
 func (s *Service) createURL(id string) string {
-	return fmt.Sprintf("http://%s/%s", s.hostName, id)
+	return fmt.Sprintf("%s/%s", s.hostName, id)
 }
 
 func (s *Service) CreateOrUpdateNewURL(value string) (string, bool, error) {
