@@ -7,24 +7,24 @@ import (
 
 type Cache struct {
 	mu   *sync.RWMutex
-	byId map[string]string
+	byID map[string]string
 }
 
 var (
-	ErrorNotFound = errors.New("Value not found")
+	ErrorNotFound = errors.New("value not found")
 )
 
 func New() *Cache {
 	return &Cache{
 		mu:   &sync.RWMutex{},
-		byId: make(map[string]string),
+		byID: make(map[string]string),
 	}
 }
 
 func (c *Cache) GetValue(id string) (string, error) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
-	value, ok := c.byId[id]
+	value, ok := c.byID[id]
 	if !ok {
 		return "", ErrorNotFound
 	}
@@ -39,6 +39,6 @@ func (c *Cache) CreateOrUpdate(key, value string) (bool, error) {
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.byId[key] = value
+	c.byID[key] = value
 	return exist, nil
 }

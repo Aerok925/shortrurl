@@ -30,7 +30,7 @@ func New(cache cache, r reducing, logger *zap.Logger, hostname string) *Service 
 	}
 }
 
-func (s *Service) GetUrl(id string) (string, error) {
+func (s *Service) GetURL(id string) (string, error) {
 	value, err := s.imMemory.GetValue(id)
 	if err != nil {
 		return "", err
@@ -42,7 +42,7 @@ func (s *Service) createURL(id string) string {
 	return fmt.Sprintf("http://%s/%s", s.hostName, id)
 }
 
-func (s *Service) CreateOrUpdateNewUrl(value string) (string, bool, error) {
+func (s *Service) CreateOrUpdateNewURL(value string) (string, bool, error) {
 	key := s.r.TruncateLine(value)
 	create, err := s.imMemory.CreateOrUpdate(key, value)
 	if err != nil {

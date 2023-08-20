@@ -80,12 +80,12 @@ func Test(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			url, create, err := s.CreateOrUpdateNewUrl(test.url)
+			url, create, err := s.CreateOrUpdateNewURL(test.url)
 			assert.NoError(t, err)
 			assert.Equal(t, test.setWant.create, create)
 			assert.Equal(t, test.setWant.url, url)
 
-			getUrl, err := s.GetUrl(test.getWant.id)
+			getUrl, err := s.GetURL(test.getWant.id)
 			assert.NoError(t, err)
 			assert.Equal(t, test.getWant.url, getUrl)
 
