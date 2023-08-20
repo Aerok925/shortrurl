@@ -85,9 +85,9 @@ func Test(t *testing.T) {
 			assert.Equal(t, test.setWant.create, create)
 			assert.Equal(t, test.setWant.url, url)
 
-			getUrl, err := s.GetUrl(test.getWant.id)
+			getURL, err := s.GetUrl(test.getWant.id)
 			assert.NoError(t, err)
-			assert.Equal(t, test.getWant.url, getUrl)
+			assert.Equal(t, test.getWant.url, getURL)
 
 		})
 	}
