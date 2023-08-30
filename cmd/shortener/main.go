@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"github.com/Aerok925/shortrurl/internal/api"
 	"github.com/Aerok925/shortrurl/internal/app"
 	"github.com/Aerok925/shortrurl/internal/configs"
@@ -8,6 +9,7 @@ import (
 	"github.com/Aerok925/shortrurl/internal/reducing"
 	"go.uber.org/zap"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -22,6 +24,8 @@ func main() {
 	a := api.New(service, cfg.Server.Address, logger)
 	a.Rout()
 	if err := a.Start(); err != nil {
-		logger.Error("Start server error: " + err.Error())
+		if !errors.Is(err, http.ErrServerClosed) {
+			logger.Error("Start server error: " + err.Error())
+		}
 	}
 }

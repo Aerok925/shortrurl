@@ -30,25 +30,25 @@ func New(s service, hostname string, logger *zap.Logger) *API {
 	}
 }
 
-func (a *API) Rout() {
-	a.r.Use(a.logging)
-	a.r.Get("/{id}", a.handlerGetURL)
+func (api *API) Rout() {
+	api.r.Use(api.logging)
+	api.r.Get("/{id}", api.handlerGetURL)
 
-	a.r.Post("/", a.handlerCreateURL)
+	api.r.Post("/", api.handlerCreateURL)
 }
 
-func (a *API) Start() error {
-	a.logger.Info("Server start in " + a.hostname)
-	return http.ListenAndServe(a.hostname, a.r)
+func (api *API) Start() error {
+	api.logger.Info("Server start in " + api.hostname)
+	return http.ListenAndServe(api.hostname, api.r)
 }
 
-func (a *API) handlerGetURL(w http.ResponseWriter, r *http.Request) {
+func (api *API) handlerGetURL(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	url, err := a.s.GetURL(id)
+	url, err := api.s.GetURL(id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -57,7 +57,7 @@ func (a *API) handlerGetURL(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusTemporaryRedirect)
 }
 
-func (a *API) handlerCreateURL(w http.ResponseWriter, r *http.Request) {
+func (api *API) handlerCreateURL(w http.ResponseWriter, r *http.Request) {
 	bodyData, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -68,7 +68,7 @@ func (a *API) handlerCreateURL(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	newURL, b, err := a.s.CreateOrUpdateNewURL(url)
+	newURL, b, err := api.s.CreateOrUpdateNewURL(url)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -78,5 +78,4 @@ func (a *API) handlerCreateURL(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 	}
 	w.Write([]byte(newURL))
-
 }

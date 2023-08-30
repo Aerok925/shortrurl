@@ -24,7 +24,6 @@ func (l *loggingMiddleware) Write(data []byte) (int, error) {
 func (l *loggingMiddleware) WriteHeader(statusCode int) {
 	l.statusCode = statusCode
 	l.r.WriteHeader(statusCode)
-	return
 }
 
 func (api *API) logging(next http.Handler) http.Handler {
