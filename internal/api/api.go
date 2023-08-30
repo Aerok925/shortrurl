@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"io"
 	"net/http"
@@ -14,13 +14,13 @@ type service interface {
 
 type API struct {
 	s        service
-	r        *mux.Router
+	r        *chi.Mux
 	hostname string
 	logger   *zap.Logger
 }
 
 func New(s service, hostname string, logger *zap.Logger) *API {
-	r := mux.NewRouter()
+	r := chi.NewMux()
 
 	return &API{
 		s:        s,
@@ -31,15 +31,10 @@ func New(s service, hostname string, logger *zap.Logger) *API {
 }
 
 func (a *API) Rout() {
-	a.r.Name("GetURL").
-		Path("/{id}").
-		HandlerFunc(a.handlerGetURL).
-		Methods(http.MethodGet)
+	a.r.Use(a.logging)
+	a.r.Get("/{id}", a.handlerGetURL)
 
-	a.r.Name("createURL").
-		Path("/").
-		HandlerFunc(a.handlerCreateURL).
-		Methods(http.MethodPost)
+	a.r.Post("/", a.handlerCreateURL)
 }
 
 func (a *API) Start() error {
@@ -48,9 +43,8 @@ func (a *API) Start() error {
 }
 
 func (a *API) handlerGetURL(w http.ResponseWriter, r *http.Request) {
-	v := mux.Vars(r)
-	id, ok := v["id"]
-	if !ok {
+	id := chi.URLParam(r, "id")
+	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
