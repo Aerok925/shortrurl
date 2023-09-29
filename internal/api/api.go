@@ -86,6 +86,10 @@ func (api *API) handlerCreateURL(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) handlerCreateURLJSON(w http.ResponseWriter, req *http.Request) {
+	if req.Header.Get("Content-Type") != "application/json" {
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		return
+	}
 	var r entities.UnprocessedURL
 	err := json.NewDecoder(req.Body).Decode(&r)
 	if err != nil {
@@ -97,9 +101,13 @@ func (api *API) handlerCreateURLJSON(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Content-Type", "application/json")
 	if newURL.Create {
 		w.WriteHeader(http.StatusCreated)
 	}
-	w.Write([]byte(newURL.URL))
+	resp, err := json.Marshal(newURL)
+	if err != nil {
+		return
+	}
+	w.Write(resp)
 }
