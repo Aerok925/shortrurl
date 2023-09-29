@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/Aerok925/shortrurl/internal/entities"
 	"github.com/Aerok925/shortrurl/internal/inmemory"
 	reducing2 "github.com/Aerok925/shortrurl/internal/reducing"
 	"github.com/stretchr/testify/assert"
@@ -80,14 +81,16 @@ func Test(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			url, create, err := s.CreateOrUpdateNewURL(test.url)
+			var testURL entities.UnprocessedURL
+			testURL.URL = test.url
+			url, err := s.CreateOrUpdateNewURL(testURL)
 			assert.NoError(t, err)
-			assert.Equal(t, test.setWant.create, create)
-			assert.Equal(t, test.setWant.url, url)
+			assert.Equal(t, test.setWant.create, url.Create)
+			assert.Equal(t, test.setWant.url, url.URL)
 
 			getURL, err := s.GetURL(test.getWant.id)
 			assert.NoError(t, err)
-			assert.Equal(t, test.getWant.url, getURL)
+			assert.Equal(t, test.getWant.url, getURL.URL)
 
 		})
 	}

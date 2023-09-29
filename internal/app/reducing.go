@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/Aerok925/shortrurl/internal/entities"
 	"go.uber.org/zap"
 )
 
@@ -30,26 +31,33 @@ func New(cache cache, r reducing, logger *zap.Logger, hostname string) *Service 
 	}
 }
 
-func (s *Service) GetURL(id string) (string, error) {
+func (s *Service) GetURL(id string) (entities.ShortUrl, error) {
 	value, err := s.imMemory.GetValue(id)
 	if err != nil {
-		return "", err
+		return entities.ShortUrl{}, err
 	}
-	return value, nil
+	res := entities.ShortUrl{
+		ID:     id,
+		URL:    value,
+		Create: false,
+	}
+	return res, nil
 }
 
 func (s *Service) createURL(id string) string {
 	return fmt.Sprintf("%s/%s", s.hostName, id)
 }
 
-func (s *Service) CreateOrUpdateNewURL(value string) (string, bool, error) {
-	key := s.r.TruncateLine(value)
-	create, err := s.imMemory.CreateOrUpdate(key, value)
+func (s *Service) CreateOrUpdateNewURL(shortURL entities.UnprocessedURL) (entities.ShortUrl, error) {
+	key := s.r.TruncateLine(shortURL.URL)
+	create, err := s.imMemory.CreateOrUpdate(key, shortURL.URL)
 	if err != nil {
-		return "", false, err
+		return entities.ShortUrl{}, err
 	}
-	if create {
-		return s.createURL(key), true, nil
+	res := entities.ShortUrl{
+		ID:     key,
+		Create: create,
+		URL:    s.createURL(key),
 	}
-	return s.createURL(key), false, nil
+	return res, nil
 }
