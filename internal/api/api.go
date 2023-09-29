@@ -10,8 +10,8 @@ import (
 )
 
 type service interface {
-	GetURL(id string) (entities.ShortUrl, error)
-	CreateOrUpdateNewURL(shortURL entities.UnprocessedURL) (entities.ShortUrl, error)
+	GetURL(id string) (entities.ShortURL, error)
+	CreateOrUpdateNewURL(shortURL entities.UnprocessedURL) (entities.ShortURL, error)
 }
 
 type API struct {

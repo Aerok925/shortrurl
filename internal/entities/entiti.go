@@ -4,7 +4,7 @@ type UnprocessedURL struct {
 	URL string `json:"url"`
 }
 
-type ShortUrl struct {
+type ShortURL struct {
 	ID     string `json:"-"`
 	URL    string `json:"result"`
 	Create bool   `json:"-"`

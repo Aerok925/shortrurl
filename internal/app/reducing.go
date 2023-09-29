@@ -31,12 +31,12 @@ func New(cache cache, r reducing, logger *zap.Logger, hostname string) *Service 
 	}
 }
 
-func (s *Service) GetURL(id string) (entities.ShortUrl, error) {
+func (s *Service) GetURL(id string) (entities.ShortURL, error) {
 	value, err := s.imMemory.GetValue(id)
 	if err != nil {
-		return entities.ShortUrl{}, err
+		return entities.ShortURL{}, err
 	}
-	res := entities.ShortUrl{
+	res := entities.ShortURL{
 		ID:     id,
 		URL:    value,
 		Create: false,
@@ -48,13 +48,13 @@ func (s *Service) createURL(id string) string {
 	return fmt.Sprintf("%s/%s", s.hostName, id)
 }
 
-func (s *Service) CreateOrUpdateNewURL(shortURL entities.UnprocessedURL) (entities.ShortUrl, error) {
+func (s *Service) CreateOrUpdateNewURL(shortURL entities.UnprocessedURL) (entities.ShortURL, error) {
 	key := s.r.TruncateLine(shortURL.URL)
 	create, err := s.imMemory.CreateOrUpdate(key, shortURL.URL)
 	if err != nil {
-		return entities.ShortUrl{}, err
+		return entities.ShortURL{}, err
 	}
-	res := entities.ShortUrl{
+	res := entities.ShortURL{
 		ID:     key,
 		Create: create,
 		URL:    s.createURL(key),
